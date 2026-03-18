@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comparative study of machine learning algorithms for sentiment analysis on IMDB movie reviews by Leila Soltani">
+    <meta name="author" content="Leila Soltani">
+    <title>IMDB Sentiment Analysis | ML Model Comparison</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #3b82f6;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --bg-white: #ffffff;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background-color: var(--bg-white);
+        }
+        
+        /* Banner */
+        .banner {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .banner-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .banner h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .banner .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+        
+        .banner .meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .banner .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Navigation */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background: var(--bg-light);
+        }
+        
+        /* Main Content */
+        .content {
+            padding: 3rem 0;
+        }
+        
+        .section {
+            margin-bottom: 4rem;
+        }
+        
+        .section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
+        .section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-dark);
+        }
+        
+        .section p {
+            margin-bottom: 1.25rem;
+            color: var(--text-dark);
+            font-size: 1.05rem;
+        }
+        
+        /* Lists */
+        ul, ol {
+            margin: 1.25rem 0 1.25rem 2rem;
+        }
+        
+        li {
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        /* Code blocks */
+        code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            color: var(--error-color);
+        }
+        
+        /* Images */
+        .image-container {
+            margin: 2.5rem 0;
+            text-align: center;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .image-caption {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+        
+        /* Results Table */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .results-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .results-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .results-table tr:hover {
+            background: var(--bg-light);
+        }
+        
+        .results-table .highlight {
+            font-weight: 600;
+            color: var(--success-color);
+        }
+        
+        /* Info Boxes */
+        .info-box {
+            background: var(--bg-light);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0.375rem;
+        }
+        
+        .info-box.warning {
+            border-left-color: var(--warning-color);
+            background: #fef3c7;
+        }
+        
+        .info-box.success {
+            border-left-color: var(--success-color);
+            background: #d1fae5;
+        }
+        
+        .info-box h4 {
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        /* Interactive Chart Container */
+        .chart-container {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: var(--bg-light);
+            border-radius: 0.75rem;
+            border: 2px solid var(--border-color);
+        }
+        
+        .chart-container iframe {
+            width: 100%;
+            height: 650px;
+            border: none;
+            border-radius: 0.5rem;
+            background: white;
+        }
+        
+        /* Links */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-decoration: none;
+        }
+        
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 3rem 2rem;
+            margin-top: 5rem;
+        }
+        
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: white;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .banner h1 {
+                font-size: 1.75rem;
+            }
+            
+            .banner .subtitle {
+                font-size: 1rem;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .results-table {
+                font-size: 0.875rem;
+            }
+            
+            .results-table th,
+            .results-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <body>
+    <!-- Title Section (White background) -->
+    <div style="background: white; padding: 3rem 2rem 1rem 2rem; text-align: center;">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: #1f2937; line-height: 1.2;">
+                Comparative Study of Machine Learning Algorithms for Sentiment Analysis
+            </h1>
+            <p style="font-size: 1.25rem; color: #6b7280; margin-bottom: 0;">
+                Logistic Regression vs Naive Bayes vs Random Forest vs SVM
+            </p>
+        </div>
+    </div>
+
+    <!-- Author Info (Optional - like Medium style) -->
+    <div style="max-width: 900px; margin: 1rem auto 2rem auto; padding: 0 2rem; display: flex; align-items: center; justify-content: center; gap: 1rem; color: #6b7280;">
+        <span>👩‍💻 Leila Soltani</span>
+        <span>•</span>
+        <span>📊 IMDB Dataset (50K Reviews)</span>
+        <span>•</span>
+        <span>🎯 84.5% Best Accuracy</span>
+    </div>
+
+
+ 
+
+
+        <!-- Navigation -->
+    <nav class="nav-links" style="border-top: 1px solid #e5e7eb;">
+        <a href="#introduction">Introduction</a>
+        <a href="#word-clouds">Word Clouds</a>
+        <a href="#methods">Methods</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#results">Results</a>
+        <a href="#interactive">Interactive</a>
+    </nav>
+
+    <!-- Banner Image -->
+    <div style="width: 100%; max-width: 900px; margin: 2rem auto; padding: 0 2rem;">
+        <img src="banner_full.png" 
+             alt="IMDB Sentiment Analysis Banner" 
+             style="width: 100%; height: auto; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    </div>
+
+    
+
+
+ 
+
+
+
+
+    
+
+
+
+    <!-- Main Content -->
+    <div class="container content">
+        
+        <!-- Introduction -->
+        <section id="introduction" class="section">
+            <h2>Introduction</h2>
+            
+            <h3>Background</h3>
+            <p>Sentiment analysis is one of the most common real-world applications of Natural Language Processing (NLP). From product reviews to social media posts, understanding how people feel about something can drive better decisions.</p>
+            
+            <p>In this project, I built and compared four popular machine learning models — <strong>Logistic Regression</strong>, <strong>Naive Bayes</strong>, <strong>Random Forest</strong>, and <strong>Support Vector Machine (SVM)</strong> — to classify movie reviews from the IMDB dataset as positive or negative.</p>
+            
+            <h3>The Dataset</h3>
+            <p>In this project I used the IMDB movie reviews dataset from Kaggle. It contains <strong>50,000 labeled reviews</strong>, evenly split between positive and negative sentiment.</p>
+            
+            <div class="button-group">
+                <a href="https://github.com/leilaksol/sentiment-analysis-imdb" class="btn" target="_blank">
+                    📂 View on GitHub
+                </a>
+                <a href="https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews" class="btn btn-secondary" target="_blank">
+                    📊 Get Dataset
+                </a>
+            </div>
+        </section>
+
+        <!-- Word Clouds -->
+        <section id="word-clouds" class="section">
+            <h2>Exploring the Data with Word Clouds</h2>
+            
+            <p>Before training any models, I wanted to get a quick, intuitive sense of what the reviews look like and which words appear most often in positive and negative reviews.</p>
+            
+            <p>A simple way to do this is with word clouds.</p>
+            
+            <p>Word clouds visualize the most frequent words in a corpus, where larger words appear more often in the text. While word clouds are not a quantitative analysis tool, they are useful for building intuition about the dataset.</p>
+            
+            <p>I generated two word clouds:</p>
+            <ul>
+                <li>One using only positive reviews</li>
+                <li>One using only negative reviews</li>
+            </ul>
+            
+            <div class="image-container">
+                <img src="visualizations/word_clouds/sentiment_word_clouds_v3.png" alt="Word Clouds for Positive and Negative Reviews">
+                <p class="image-caption">Word clouds showing distinctive words in positive (left) and negative (right) reviews</p>
+            </div>
+            
+            <h3>What We Can Observe</h3>
+            
+            <p>From the positive reviews word cloud, we often see words such as:</p>
+            <p><strong>great, excellent, love, amazing, best, wonderful</strong></p>
+            
+            <p>From the negative reviews word cloud, common words include:</p>
+            <p><strong>bad, worst, boring, waste, awful, poor</strong></p>
+            
+            <div class="info-box success">
+                <h4>✓ Key Insight</h4>
+                <p>These patterns match our expectations and provide a quick sanity check that the dataset is labeled correctly and contains meaningful sentiment-bearing words.</p>
+                <p>Word clouds don't replace proper modeling, but they offer a helpful first glance at the data before moving into feature extraction and training.</p>
+            </div>
+        </section>
+
+        <!-- Text Preparation -->
+        <section id="preprocessing" class="section">
+            <h2>How the Text Was Prepared</h2>
+            
+            <p>Before training any model, the text needs to be converted into numbers.</p>
+            
+            <p>Here's what I did:</p>
+            <ol>
+                <li>Removed HTML tags, punctuation, numbers, and extra spaces</li>
+                <li>Tokenized each review into words</li>
+                <li>Converted reviews into numerical vectors using <strong>TF-IDF</strong> (Term Frequency–Inverse Document Frequency)</li>
+            </ol>
+            
+            <div class="info-box">
+                <h4>📖 What is TF-IDF?</h4>
+                <p>TF-IDF helps capture not only how often a word appears in a review, but also how important that word is across the entire dataset. Common words like "the" and "is" get lower scores, while distinctive words like "brilliant" or "terrible" get higher scores.</p>
+            </div>
+        </section>
+
+        <!-- Models -->
+        <section id="methods" class="section">
+            <h2>Machine Learning Models Tested</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div class="info-box">
+                    <h4>🔵 Logistic Regression</h4>
+                    <p>A linear classifier that models the probability of a binary outcome using a logistic function.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h4>🔴 Naive Bayes</h4>
+                    <p>A probabilistic classifier based on Bayes' theorem with an assumption of conditional independence among features.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h4>🟢 Random Forest</h4>
+                    <p>An ensemble learning method that combines multiple decision trees to improve robustness and accuracy.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h4>🟠 SVM</h4>
+                    <p>Support Vector Machine attempts to find an optimal hyperplane that separates data points with maximum margin.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metrics -->
+        <section id="metrics" class="section">
+            <h2>Evaluation Metrics</h2>
+            
+            <p>To comprehensively evaluate model performance, multiple metrics are used. Relying on a single metric such as accuracy can be misleading, especially when different types of classification errors have different practical implications.</p>
+            
+            <p>Therefore, this project reports <strong>Accuracy</strong>, <strong>Precision</strong> (Positive class), <strong>Recall</strong> (Positive class), <strong>F1-score</strong> (Positive class), and <strong>ROC-AUC</strong>.</p>
+            
+            <h3>Accuracy</h3>
+            <p><strong>Definition:</strong> Accuracy measures the proportion of correctly classified samples out of all samples.</p>
+            <p><strong>Meaning:</strong> Accuracy indicates how often the model makes the correct prediction overall.</p>
+            <div class="info-box warning">
+                <h4>Why it's not enough</h4>
+                <p>Accuracy looks good at first glance, but it doesn't tell us what kind of mistakes the model is making. A model can have high accuracy but still perform poorly in one class.</p>
+                <p>In balanced datasets like IMDB, accuracy is useful — but we still need more context.</p>
+            </div>
+            
+            <h3>Precision (Positive Class)</h3>
+            <p><strong>Definition:</strong> Precision measures the proportion of predicted positive reviews that are actually positive.</p>
+            <p><strong>Meaning:</strong> When the model predicts a review as positive, how often is it correct?</p>
+            <p><strong>Why it matters:</strong> High precision means the model doesn't wrongly label too many negative reviews as positive. If you were analyzing customer feedback, high precision means you're not mistakenly treating unhappy customers as satisfied ones.</p>
+            
+            <h3>Recall (Positive Class)</h3>
+            <p><strong>Definition:</strong> Recall measures the proportion of actual positive reviews that are correctly identified.</p>
+            <p><strong>Meaning:</strong> Out of all truly positive reviews, how many did the model capture?</p>
+            <p><strong>Why it matters:</strong> High recall means we're not missing too many positive reviews. If your goal is to find all satisfied users, recall becomes very important.</p>
+            
+            <h3>F1-Score (Positive Class)</h3>
+            <p><strong>Definition:</strong> The F1-score is the harmonic mean of precision and recall.</p>
+            <p><strong>Meaning:</strong> F1-score provides a single metric that balances precision and recall.</p>
+            <p><strong>Why it matters:</strong> Sometimes precision is high but recall is low (or vice versa). F1-score gives a combined view and helps evaluate the trade-off between the two. If you want a balanced model, F1-score is usually the metric to look at.</p>
+            
+            <h3>ROC-AUC</h3>
+            <p><strong>Definition:</strong> ROC-AUC measures the model's ability to distinguish between positive and negative classes across all classification thresholds.</p>
+            <p><strong>Meaning:</strong> ROC-AUC represents the probability that the model ranks a randomly chosen positive review higher than a randomly chosen negative review.</p>
+            
+            <div class="info-box">
+                <h4>📊 Interpretation</h4>
+                <ul>
+                    <li><strong>AUC = 0.5</strong> → No discriminative ability (random guessing)</li>
+                    <li><strong>AUC = 1.0</strong> → Perfect discrimination</li>
+                </ul>
+                <p>Higher AUC values indicate better overall separability.</p>
+            </div>
+            
+            <p><strong>Why it matters:</strong> Unlike accuracy, ROC-AUC doesn't depend on one fixed threshold (like 0.5). It evaluates the model's overall ability to distinguish between classes. This makes it especially useful when comparing models fairly.</p>
+            
+            <h3>Why Use All of These?</h3>
+            <p>Each metric highlights a different aspect of performance:</p>
+            <ul>
+                <li><strong>Accuracy</strong> → overall correctness</li>
+                <li><strong>Precision</strong> → how reliable positive predictions are</li>
+                <li><strong>Recall</strong> → how many positives we catch</li>
+                <li><strong>F1</strong> → balance between precision and recall</li>
+                <li><strong>ROC-AUC</strong> → overall ranking ability</li>
+            </ul>
+            <p>Looking at all of them together gives a much clearer picture than any single metric alone.</p>
+        </section>
+
+        <!-- Confusion Matrices -->
+        <section id="confusion" class="section">
+            <h2>Understanding Confusion Matrices</h2>
+            
+            <p>In addition to numerical metrics, I also used confusion matrices to better understand how each model makes mistakes.</p>
+            
+            <p>A confusion matrix breaks predictions into four categories:</p>
+            <ul>
+                <li><strong>True Positive (TP):</strong> Positive review correctly predicted as positive</li>
+                <li><strong>True Negative (TN):</strong> Negative review correctly predicted as negative</li>
+                <li><strong>False Positive (FP):</strong> Negative review predicted as positive</li>
+                <li><strong>False Negative (FN):</strong> Positive review predicted as negative</li>
+            </ul>
+            
+            <div class="image-container">
+                <img src="visualizations/confusion_matrices/all_4methods_confusion_matrices.png" alt="Confusion Matrices for All 4 Models">
+                <p class="image-caption">2×2 grid showing confusion matrices for each model with counts and percentages</p>
+            </div>
+            
+            <h3>Why Confusion Matrices Are Useful</h3>
+            <p>While metrics like accuracy or F1-score give a single number, confusion matrices show <strong>where</strong> errors are happening.</p>
+            
+            <p>For example:</p>
+            <ul>
+                <li>A model with many false positives tends to label negative reviews as positive</li>
+                <li>A model with many false negatives tends to miss positive reviews</li>
+            </ul>
+            
+            <p>This helps answer questions like:</p>
+            <ul>
+                <li>Is the model overly optimistic?</li>
+                <li>Is it too conservative about predicting positive sentiment?</li>
+            </ul>
+            
+            <div class="info-box success">
+                <h4>💡 Practical Insight</h4>
+                <p>By looking at confusion matrices alongside performance metrics, we gain a more complete understanding of model behavior.</p>
+                <p>Two models might have similar accuracy, but one may produce more false positives while the other produces more false negatives — which could matter depending on the application.</p>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <section id="results" class="section">
+            <h2>Results</h2>
+            
+            <h3>Performance Comparison</h3>
+            
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Accuracy</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1-Score</th>
+                        <th>Training Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SVM</strong></td>
+                        <td class="highlight">84.5%</td>
+                        <td class="highlight">85.2%</td>
+                        <td class="highlight">85.8%</td>
+                        <td class="highlight">84.9%</td>
+                        <td>0.2s</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Logistic Regression</strong></td>
+                        <td class="highlight">84.4%</td>
+                        <td>85.0%</td>
+                        <td>85.5%</td>
+                        <td>84.8%</td>
+                        <td class="highlight">0.1s</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Naive Bayes</strong></td>
+                        <td>82.0%</td>
+                        <td>81.0%</td>
+                        <td>86.0%</td>
+                        <td>83.4%</td>
+                        <td class="highlight">0.01s</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Random Forest</strong></td>
+                        <td>81.7%</td>
+                        <td>81.5%</td>
+                        <td>83.0%</td>
+                        <td>82.2%</td>
+                        <td>9.0s</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="image-container">
+                <img src="visualizations/metrics/all_metrics_comparison.png" alt="All Metrics Comparison">
+                <p class="image-caption">Comparison of accuracy, precision, recall, and F1-score across all methods</p>
+            </div>
+            
+            <div class="image-container">
+                <img src="visualizations/metrics/precision_recall_tradeoff.png" alt="Precision-Recall Trade-off">
+                <p class="image-caption">Precision-Recall trade-off showing how models balance these metrics</p>
+            </div>
+            
+            <div class="image-container">
+                <img src="visualizations/metrics/roc_curves_all_methods.png" alt="ROC Curves">
+                <p class="image-caption">ROC curves demonstrating each model's ability to separate classes</p>
+            </div>
+            
+            <h3>What Do These Numbers Tell Us?</h3>
+            
+            <h4>1. Best Overall Performance</h4>
+            <p><strong>SVM</strong> achieves the highest scores across almost all metrics. <strong>Logistic Regression</strong> is extremely close — so close that in many practical cases, the difference is negligible.</p>
+            
+            <h4>2. Training Time Matters</h4>
+            <ul>
+                <li><strong>Fastest:</strong> Naive Bayes (~0.01s)</li>
+                <li><strong>Slowest:</strong> Random Forest (~9s)</li>
+                <li>Logistic Regression is about <strong>4× faster</strong> than SVM</li>
+            </ul>
+            <p>If you care about fast training and frequent retraining, this matters.</p>
+            
+            <h4>3. So Which Model Should You Use?</h4>
+            <p>It depends on your goal:</p>
+            <ul>
+                <li><strong>Want the absolute best performance?</strong> → SVM</li>
+                <li><strong>Want almost the same performance but much faster?</strong> → Logistic Regression</li>
+                <li><strong>Want a quick baseline?</strong> → Naive Bayes</li>
+            </ul>
+            
+            <div class="info-box success">
+                <h4>🎯 Recommendation</h4>
+                <p>Given how close SVM and Logistic Regression are, <strong>Logistic Regression</strong> is arguably the best practical choice here.</p>
+            </div>
+        </section>
+
+        <!-- Interactive Chart -->
+        <section id="interactive" class="section">
+            <h2>Interactive Model Comparison</h2>
+            
+            <p>Explore the performance metrics interactively! Select different metrics from the dropdown to compare all four models dynamically.</p>
+            
+            <div class="chart-container">
+                <iframe src="interactive_chart.html"></iframe>
+            </div>
+            
+            <p style="text-align: center; margin-top: 1rem;">
+                <a href="interactive_chart.html" target="_blank" class="btn">Open in Full Screen</a>
+            </p>
+        </section>
+
+        <!-- Final Thoughts -->
+        <section id="conclusion" class="section">
+            <h2>Final Thoughts</h2>
+            
+            <p>This project shows that you don't always need complex deep learning models to get strong results. Classic machine learning algorithms, when paired with good preprocessing and TF-IDF features, can perform remarkably well for sentiment analysis.</p>
+            
+            <p>A natural next step would be to test:</p>
+            <ul>
+                <li>Word embeddings (Word2Vec, GloVe)</li>
+                <li>Deep learning models (LSTM, Transformers)</li>
+            </ul>
+            
+            <p>Then ask an important question:</p>
+            <p><strong>Do the performance gains justify the extra complexity and computational cost?</strong></p>
+            
+            <div class="button-group" style="justify-content: center; margin-top: 3rem;">
+                <a href="https://github.com/leilaksol/sentiment-analysis-imdb" class="btn" target="_blank">
+                    📂 View Full Code on GitHub
+                </a>
+                <a href="https://www.linkedin.com/in/leilak-soltan/" class="btn btn-secondary" target="_blank">
+                    💼 Connect on LinkedIn
+                </a>
+            </div>
+        </section>
+        
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <h3>Leila Soltani</h3>
+            <p>Data Science & ML Engineer</p>
+            <div class="footer-links">
+                <a href="https://github.com/leilaksol" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/leilak-soltan/" target="_blank">LinkedIn</a>
+                <a href="https://github.com/leilaksol/sentiment-analysis-imdb" target="_blank">Project Repository</a>
+            </div>
+            <p style="margin-top: 2rem; opacity: 0.7; font-size: 0.9rem;">
+                © 2026 Leila Soltani. Built with care for data science portfolio.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
