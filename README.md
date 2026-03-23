@@ -9,16 +9,6 @@
 
 **🔗 [View Live Portfolio](https://leilaksol.github.io/sentiment-analysis-imdb/)**
 
-## 📊 Visualizations
-
-### Word Clouds
-![Word Clouds](visualizations/word_clouds/sentiment_word_clouds_v3.png)
-
-### Confusion Matrices
-![Confusion Matrices](visualizations/confusion_matrices/all_4methods_confusion_matrices.png)
-
-### Performance Metrics
-![Metrics](visualizations/metrics/all_metrics_comparison.png)
 
 ---
 
