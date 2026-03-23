@@ -1,2 +1,164 @@
-# sentiment-analysis-imdb
-Comparative study of ML algorithms for sentiment analysis on IMDB movie reviews
+# 🎬 IMDB Sentiment Analysis: Machine Learning Model Comparison
+
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Kaggle](https://img.shields.io/badge/Dataset-Kaggle-20BEFF.svg)](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews)
+[![Live Demo](https://img.shields.io/badge/Live-Portfolio-2563eb.svg)](https://leilaksol.github.io/sentiment-analysis-imdb/)
+
+> A comprehensive comparison of 4 machine learning algorithms for sentiment classification on the IMDB movie reviews dataset.
+
+**🔗 [View Live Portfolio](https://leilaksol.github.io/sentiment-analysis-imdb/)**
+
+![Banner](banner_full.png)
+
+---
+
+## 🎯 Overview
+
+This project compares **four classical machine learning algorithms** for binary sentiment classification:
+
+- ✅ **Logistic Regression**
+- ✅ **Naive Bayes**
+- ✅ **Random Forest**
+- ✅ **Support Vector Machine (SVM)**
+
+**Dataset:** 50,000 IMDB movie reviews (balanced: 25K positive, 25K negative)
+
+---
+
+## 🏆 Key Results
+
+| Model | Accuracy | Precision | Recall | F1-Score | Training Time |
+|-------|----------|-----------|--------|----------|---------------|
+| **SVM** | **84.5%** | **85.2%** | **85.8%** | **84.9%** | 0.2s |
+| **Logistic Regression** | **84.4%** | **85.0%** | **85.5%** | **84.8%** | 0.1s ⚡ |
+| Naive Bayes | 82.0% | 81.0% | 86.0% | 83.4% | 0.01s |
+| Random Forest | 81.7% | 81.5% | 83.0% | 82.2% | 9.0s |
+
+### 💡 Key Findings:
+- SVM achieves highest accuracy (84.5%)
+- Logistic Regression nearly matches SVM but is **4× faster**
+- All models within **3%** of each other
+- Classic ML achieves **82-84%** without deep learning
+
+**Recommendation:** **Logistic Regression** for best speed/performance balance
+
+---
+
+## 📊 Visualizations
+
+### Word Clouds
+![Word Clouds](visualizations/word_clouds/sentiment_word_clouds_v3.png)
+
+### Confusion Matrices
+![Confusion Matrices](visualizations/confusion_matrices/all_4methods_confusion_matrices.png)
+
+### Performance Metrics
+![Metrics](visualizations/metrics/all_metrics_comparison.png)
+
+---
+
+## 🛠️ Installation
+
+```bash
+# Clone repository
+git clone https://github.com/leilaksol/sentiment-analysis-imdb.git
+cd sentiment-analysis-imdb
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Download dataset from Kaggle
+# Place IMDB Dataset.csv in data/ folder
+```
+
+---
+
+## 🚀 Usage
+
+```bash
+# Run analysis notebook
+jupyter notebook project_v02.ipynb
+```
+
+Or use Python:
+
+```python
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+
+# Load data
+df = pd.read_csv('data/IMDB Dataset.csv')
+
+# Train model
+vectorizer = TfidfVectorizer(max_features=5000)
+X = vectorizer.fit_transform(df['review'])
+y = df['sentiment'].map({'positive': 1, 'negative': 0})
+
+model = LogisticRegression()
+model.fit(X, y)
+```
+
+---
+
+## 📁 Project Structure
+
+```
+sentiment-analysis-imdb/
+├── visualizations/          # All charts and figures
+│   ├── word_clouds/
+│   ├── confusion_matrices/
+│   └── metrics/
+├── data/                    # Dataset (download from Kaggle)
+├── index.html               # Portfolio webpage
+├── project_v02.ipynb        # Main notebook
+└── README.md                # This file
+```
+
+---
+
+## 🔮 Future Work
+
+- Deep learning models (LSTM, BERT)
+- Word embeddings (Word2Vec, GloVe)
+- Hyperparameter optimization
+- REST API deployment
+- Multi-class sentiment analysis
+
+---
+
+## 👩‍💻 Author
+
+**Leila Soltani** - Data Science & ML Engineer
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](https://www.linkedin.com/in/leilak-soltan/)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black)](https://github.com/leilaksol)
+[![Portfolio](https://img.shields.io/badge/Portfolio-Visit-2563eb)](https://leilaksol.github.io/)
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file
+
+---
+
+## 🙏 Acknowledgments
+
+- Dataset: [Kaggle IMDB Dataset](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews)
+- Tools: scikit-learn, pandas, matplotlib, seaborn, plotly
+
+---
+
+<div align="center">
+
+⭐ **Star this project if you found it helpful!** ⭐
+
+**[View Live Portfolio](https://leilaksol.github.io/sentiment-analysis-imdb/)**
+
+</div>
