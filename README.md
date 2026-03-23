@@ -9,42 +9,6 @@
 
 **🔗 [View Live Portfolio](https://leilaksol.github.io/sentiment-analysis-imdb/)**
 
-![Banner](banner_full.png)
-
----
-
-## 🎯 Overview
-
-This project compares **four classical machine learning algorithms** for binary sentiment classification:
-
-- ✅ **Logistic Regression**
-- ✅ **Naive Bayes**
-- ✅ **Random Forest**
-- ✅ **Support Vector Machine (SVM)**
-
-**Dataset:** 50,000 IMDB movie reviews (balanced: 25K positive, 25K negative)
-
----
-
-## 🏆 Key Results
-
-| Model | Accuracy | Precision | Recall | F1-Score | Training Time |
-|-------|----------|-----------|--------|----------|---------------|
-| **SVM** | **84.5%** | **85.2%** | **85.8%** | **84.9%** | 0.2s |
-| **Logistic Regression** | **84.4%** | **85.0%** | **85.5%** | **84.8%** | 0.1s ⚡ |
-| Naive Bayes | 82.0% | 81.0% | 86.0% | 83.4% | 0.01s |
-| Random Forest | 81.7% | 81.5% | 83.0% | 82.2% | 9.0s |
-
-### 💡 Key Findings:
-- SVM achieves highest accuracy (84.5%)
-- Logistic Regression nearly matches SVM but is **4× faster**
-- All models within **3%** of each other
-- Classic ML achieves **82-84%** without deep learning
-
-**Recommendation:** **Logistic Regression** for best speed/performance balance
-
----
-
 ## 📊 Visualizations
 
 ### Word Clouds
