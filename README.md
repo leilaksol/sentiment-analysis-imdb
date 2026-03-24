@@ -120,21 +120,6 @@ Comprehensive metrics for balanced assessment:
 ---
 
 
-## 📁 Project Structure
-
-```
-sentiment-analysis-imdb/
-├── visualizations/          # All charts and figures
-│   ├── word_clouds/
-│   ├── confusion_matrices/
-│   └── metrics/
-├── data/                    # Dataset (download from Kaggle)
-├── index.html               # Portfolio webpage
-├── project_v02.ipynb        # Main notebook
-└── README.md                # This file
-```
-
----
 
 ## 🔮 Future Work
 
