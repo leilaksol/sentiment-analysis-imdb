@@ -11,54 +11,114 @@
 
 
 ---
+## 📋 Overview
 
-## 🛠️ Installation
+This project compares **four classical machine learning algorithms** for binary sentiment classification:
 
-```bash
-# Clone repository
-git clone https://github.com/leilaksol/sentiment-analysis-imdb.git
-cd sentiment-analysis-imdb
+- ✅ **Logistic Regression**
+- ✅ **Naive Bayes**
+- ✅ **Random Forest**
+- ✅ **Support Vector Machine (SVM)**
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+**Dataset:** 50,000 movie reviews from IMDB, evenly split between positive and negative sentiment.
 
-# Install dependencies
-pip install -r requirements.txt
+**Goal:** Determine which algorithm provides the best balance of accuracy, speed, and interpretability.
 
-# Download dataset from Kaggle
-# Place IMDB Dataset.csv in data/ folder
+---
+
+
+## 🛠️ Technologies Used
+
+- **Python 3.9+**
+- **scikit-learn** - Machine learning models
+- **pandas** - Data manipulation
+- **matplotlib & seaborn** - Static visualizations
+- **plotly** - Interactive charts
+- **TF-IDF** - Text feature extraction
+- **Jupyter Notebook** - Experimentation
+
+---
+
+## 📁 Project Structure
+```
+sentiment-analysis-imdb/
+├── visualizations/
+│   ├── word_clouds/              # Sentiment word clouds
+│   ├── confusion_matrices/       # Model confusion matrices
+│   ├── metrics/                  # Performance comparison charts
+│   └── interactive_metrics_chart.html
+├── project_v02.ipynb             # Main Jupyter notebook
+├── index.html                    # Portfolio webpage
+├── banner_full.png               # Project banner
+├── README.md                     # This file
+└── LICENSE                       # MIT License
 ```
 
 ---
 
-## 🚀 Usage
+## 🚀 Quick Start
 
+### 1. Clone the Repository
 ```bash
-# Run analysis notebook
+git clone https://github.com/leilaksol/sentiment-analysis-imdb.git
+cd sentiment-analysis-imdb
+```
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+
+### 3. Download the Dataset
+
+**Option A: Using KaggleHub (Automated)**
+```python
+import kagglehub
+file_path = kagglehub.dataset_download("lakshmi25npathi/imdb-dataset-of-50k-movie-reviews")
+```
+
+**Option B: Manual Download**
+1. Visit [Kaggle IMDB Dataset](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews)
+2. Download `IMDB Dataset.csv`
+3. Place in your working directory
+
+### 4. Run the Notebook
+```bash
 jupyter notebook project_v02.ipynb
 ```
 
-Or use Python:
+---
 
-```python
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+## 📚 Methodology
 
-# Load data
-df = pd.read_csv('data/IMDB Dataset.csv')
+### 1. Data Preprocessing
+- Removed HTML tags, punctuation, and special characters
+- Converted text to lowercase
+- Tokenized reviews into words
 
-# Train model
-vectorizer = TfidfVectorizer(max_features=5000)
-X = vectorizer.fit_transform(df['review'])
-y = df['sentiment'].map({'positive': 1, 'negative': 0})
+### 2. Feature Extraction
+- **TF-IDF Vectorization** (max 1000 features, bigrams)
+- Captures word importance across the dataset
+- Handles sparse, high-dimensional text data
 
-model = LogisticRegression()
-model.fit(X, y)
-```
+### 3. Model Training
+Trained 4 algorithms with default parameters:
+- Logistic Regression (max_iter=1000)
+- Multinomial Naive Bayes
+- Random Forest (n_estimators=100)
+- Linear SVM (max_iter=1000)
+
+### 4. Evaluation
+Comprehensive metrics for balanced assessment:
+- **Accuracy** - Overall correctness
+- **Precision** - Reliability of positive predictions
+- **Recall** - Capture rate of positive reviews
+- **F1-Score** - Harmonic mean of precision & recall
+- **ROC-AUC** - Threshold-independent discrimination
 
 ---
+
 
 ## 📁 Project Structure
 
